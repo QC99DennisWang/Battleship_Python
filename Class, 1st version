@@ -1,0 +1,146 @@
+class battleship(object):
+    def createM(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = []
+        for k in range(11):
+            print '  ',
+            if k != 0:
+                print k,
+                print ' ',
+            else:
+                print '   ',
+        print
+        for n in range(10):
+            print
+            T = ''
+            for i in range(10):
+                T = T+'  ---  '
+            test.append(T)
+            print '  ', al[n],' ',
+            print T
+
+            
+                                    
+    def background(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = []
+        test.append(['0',' 1 ',' 2 ',' 3 ',' 4 ',' 5 ',' 6 ',' 7 ',' 8 ',' 9 ',' 10'])
+        print
+        for n in range(10):
+            l = []
+            l.append(al[n])
+            for i in range(10):
+                l.append('---')
+            test.append(l)
+        return test
+
+
+
+    def readlist(self,L):
+        for list in L:
+            print
+            for n in range(len(list)):
+                print list[n], 
+
+                                              
+    def loadMap(self):
+        print 'Loading map, please wait...'
+        inFile = open('C:\Users\Dennis\Desktop\battleship_setup1.txt', 'r')
+        print 'Map loaded.'                 
+        return inFile
+
+    
+            
+    def convert_matrix(self,Matrix):
+        elist = []
+        for row in Matrix:            
+            list0 = []
+            for n in row.split():
+                list0.append(n)
+            elist.append(list0),
+        return elist
+
+                      
+    def get_guess(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        Y = str(raw_input('Please input the column (from A to J)            '))
+        x = float(raw_input('Please input the row (from 1 to 10)            '))
+        for yy in range (10):
+            if al[yy] == Y:   
+                y = yy+1 
+                return int(x),int(y)
+
+        
+    def test_hit(self,x,y,Maplist):
+        if Maplist[int(y)][int(x)] == 'x':
+            return True
+        return False
+
+                
+    def test_repeat(self,x,y,l):
+        test = 10*x+y
+        if test in l:
+            return True
+        return False            
+
+
+    def difficulty(self):
+        print 'Please choose the level you would like to play...  '
+        print '1. Level 1: Easy  70 tries'
+        print '2. Level 2: Medium  50 tries'
+        print '3. Level 3: Hard  40 tries'
+        ask = float(raw_input('Please input the number that you choose, 1, 2 and 3 is valid...    '))
+        if ask == 1:
+            c = 70
+        elif ask == 2:
+            c = 50
+        elif ask == 3:
+            c = 40
+        print'You have',c ,'chances to play the game.'
+        return c
+
+        
+                        
+    def updateH(self,x,y,l):
+        test = 10*x+y
+        if self.test_repeat(x,y,l) == True:
+            l.remove(test)
+    
+    def updateBoard(self,board,x,y,init):
+        board[y][x] = ' '+init[y][x]+' '
+        return board
+    
+    
+hundred = []
+for m in range (101):
+    if m>0:
+        hundred.append(int(m))     
+  
+B = battleship()
+B.readlist(B.background())
+print
+MAP = B.loadMap()
+LIST = B.convert_matrix(MAP)
+for n in range(11):
+    print LIST[n]
+
+chance = B.difficulty()
+background = B.background()
+    
+while chance > 0:
+    a,b = B.get_guess()
+    if B.test_repeat(a,b,hundred) == False:
+        print 'You have already guessed this area.'
+    elif B.test_repeat(a,b,hundred) == True:
+        B.updateH(a,b,hundred)
+        if B.test_hit(a,b,LIST) == False:
+            print 'System notification!!! ====== It is not correct'
+            chance = chance - 1
+        elif B.test_hit(a,b,LIST) == True:
+            print 'System notification!!! ====== Correct!'
+        background = B.updateBoard(background,a,b,LIST)
+        B.readlist(background) 
+    print        
+    print'System notification!!! ====== You have',chance,'chances left.'
+        
+    
