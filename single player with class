@@ -1,0 +1,249 @@
+class battleship(object):
+    def transfer_filelist(self,MapList):
+        for m in range(11):
+            if m>0:
+                for n in range(11):
+                    if n>0:
+                        if MapList[m][n] != '0':
+                            MapList[m][n] = 'x'
+                    
+        return MapList
+    
+    
+    def createM(self):
+    ## this function is actually not necessary
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = []
+        for k in range(11):
+            print '  ',
+            if k != 0:
+                print k,
+                print ' ',
+            else:
+                print '   ',
+        print
+        for n in range(10):
+            print
+            T = ''
+            for i in range(10):
+                T = T+'  ---  '
+            test.append(T)
+            print '  ', al[n],' ',
+            print T
+
+            
+                                    
+    def background(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = []
+        test.append(['0',' 1 ',' 2 ',' 3 ',' 4 ',' 5 ',' 6 ',' 7 ',' 8 ',' 9 ',' 10'])
+        print
+        for n in range(10):
+            l = []
+            l.append(al[n])
+            for i in range(10):
+                l.append('---')
+            test.append(l)
+        return test
+
+
+
+    def readlist(self,L):
+        for list in L:
+            print
+            for n in range(len(list)):
+                print list[n], 
+
+                                              
+    def loadMap(self):
+        
+        inFile = open('battleship_setup2.txt', 'r')
+                         
+        return inFile
+
+    
+            
+    def convert_matrix(self,Matrix):
+        elist = []
+        for row in Matrix:            
+            list0 = []
+            for n in row.split():
+                list0.append(n)
+            elist.append(list0),
+        return elist
+
+                      
+    def get_guess(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = True
+        while test:
+            guess = str(raw_input('Please pick a guess. First letter ranges from A to G, the second number range from 1 to 10.(e.g.A1) ---------- '))
+            G = ''.join(guess.split())
+            
+            if len(G) > 3 or len(G) < 2:
+                print 'Invalid length of the input!!'
+                test = True    
+            
+            else:
+                #if G[1:3].isdigit == True:
+                if int(G[1:3]) >10:
+                    print '*********System Notification ==== Warning! Invalid input!************'
+                    test = True
+                
+                elif (G[0] in al) and (int(G[1]) in [1,2,3,4,5,6,7,8,9] or int(G[1:3]) == 10):    
+                    test = False
+                else:
+                    print'*********System Notification ==== Warning! Invalid input!************'
+        
+        Y = G[0]
+        if len(G) == 2:
+            x = G[1]  
+        elif len(G) == 3:
+            x = G[1:3]   
+                
+        for yy in range (10):
+            if al[yy] == Y:   
+                y = yy+1 
+                #if x == 10:
+                    #x= x-1
+                    #return int(x),int(y)
+                
+                return int(x),int(y)
+
+        
+    def test_hit(self,x,y,Maplist):
+
+        if Maplist[int(y)][int(x)] == 'x':
+            return True
+        return False
+
+                
+    def test_repeat(self,x,y,l):
+        test = 10*x+y
+        if test in l:
+            return True
+        return False            
+
+
+    def difficulty(self):
+        print 'Please choose the level you would like to play...  '
+        print '1. Level 1: Easy  50 tries'
+        print '2. Level 2: Medium  40 tries'
+        print '3. Level 3: Hard  30 tries'
+        ask = float(raw_input('Please input the number that you choose, 1, 2 and 3 is valid...    '))
+        if ask == 1:
+            c = 50
+        elif ask == 2:
+            c = 40
+        elif ask == 3:
+            c = 30
+        print'You have',c ,'chances to play the game.'
+        return c
+
+        
+                        
+    def updateH(self,x,y,l):
+        test = 10*x+y
+        if self.test_repeat(x,y,l) == True:
+            l.remove(test)
+    
+    
+    def updateBoard(self,board,x,y,init):
+        board[y][x] = ' '+init[y][x]+' '
+        return board
+    
+    
+    def test_end(self,x,y):
+        MAPL = self.convert_matrix(self.loadMap())
+        MAPL[y].remove(MAPL[y][x])
+        k = 1
+        for m in range(11):
+            while k<len(MAPL[m]):
+                if MAPL[m][k] != 0:
+                    return False
+                k = k+1
+        return True                
+        
+    def update_al(self,AL,x,y):
+        MAPL = self.convert_matrix(self.loadMap())
+        G = MAPL[y][x]
+        print G
+        AL.remove(G)
+        
+    def test_sink(self,AL,x,y):
+        MAPL = self.convert_matrix(self.loadMap())
+        if AL.count(MAPL[y][x]) == 0:
+            return True
+        return False
+        
+    
+hundred = []
+for m in range (111):
+    if m>0:
+        hundred.append(int(m))     
+##hundred list for test if repeated
+  
+B = battleship()
+B.readlist(B.background())
+print
+
+
+MAP_Initial = B.loadMap()
+LIST_initial = B.convert_matrix(MAP_Initial)
+
+al = []
+for n in range(11):
+    if n >0:
+        for m in range(11):
+            if m >0:
+                if LIST_initial[n][m] != '0':
+                    al.append(LIST_initial[n][m])
+
+print al
+
+
+
+LIST = B.transfer_filelist(LIST_initial)
+
+
+ 
+
+chance = B.difficulty()
+background = B.background()
+
+    
+#print EM
+ 
+while chance > 0:
+    a,b = B.get_guess()
+    
+    if B.test_repeat(a,b,hundred) == False:
+        print 'You have already guessed this area.'
+    elif B.test_repeat(a,b,hundred) == True:
+        B.updateH(a,b,hundred)
+        print
+        
+        if B.test_hit(a,b,LIST) == False:
+            print '***************System notification!!! ====== It is not correct! You missed it!******************'
+            chance = chance - 1
+            
+        elif B.test_hit(a,b,LIST) == True:
+            print al
+            B.update_al(al,a,b)
+ 
+            print '***************System notification!!! ====== Correct! Strike succeeded!*******************'
+            B.test_end(a,b)
+            
+            if B.test_sink(al,a,b) == True:
+                print '***************System notification!!! ====== Congrats! You have just put down an enemy ship.************'
+                if B.test_end(a,b) == True:
+                    print '***************System notification!!! ====== Congrats! You have won the game! ************'        
+        background = B.updateBoard(background,a,b,LIST)
+        B.readlist(background) 
+    
+    print        
+    print
+    print'System notification!!! ====== You have',chance,'chances left.'
+        
+    
+print'You lost the game.'
