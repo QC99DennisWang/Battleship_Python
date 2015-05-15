@@ -1,0 +1,324 @@
+class battleship(object):
+    def transfer_filelist(self,MapList):
+        for m in range(11):
+            if m>0:
+                for n in range(11):
+                    if n>0:
+                        if MapList[m][n] != '0':
+                            MapList[m][n] = 'x'
+                    
+        return MapList
+    
+    
+    def createM(self):
+    ## this function is actually not necessary
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = []
+        for k in range(11):
+            print '  ',
+            if k != 0:
+                print k,
+                print ' ',
+            else:
+                print '   ',
+        print
+        for n in range(10):
+            print
+            T = ''
+            for i in range(10):
+                T = T+'  ---  '
+            test.append(T)
+            print '  ', al[n],' ',
+            print T
+
+            
+                                    
+    def background1(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = []
+        test.append(['0',' 1 ',' 2 ',' 3 ',' 4 ',' 5 ',' 6 ',' 7 ',' 8 ',' 9 ',' 10'])
+        print
+        for n in range(10):
+            l = []
+            l.append(al[n])
+            for i in range(10):
+                l.append('---')
+            test.append(l)
+        return test
+
+    def background2(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = []
+        test.append(['0',' 1 ',' 2 ',' 3 ',' 4 ',' 5 ',' 6 ',' 7 ',' 8 ',' 9 ',' 10'])
+        print
+        for n in range(10):
+            l = []
+            l.append(al[n])
+            for i in range(10):
+                l.append('---')
+            test.append(l)
+        return test
+
+
+    def readlist(self,L):
+        for list in L:
+            print
+            for n in range(len(list)):
+                print list[n], 
+
+                                              
+    def loadMap1(self):
+        
+        inFile1 = open('battleship_setup1.txt', 'r')
+    
+        return inFile1
+    
+    def loadMap2(self):
+        
+        inFile2 = open('battleship_setup2.txt', 'r')
+                         
+        return inFile2
+    
+            
+    def convert_matrix(self,Matrix):
+        elist = []
+        for row in Matrix:            
+            list0 = []
+            for n in row.split():
+                list0.append(n)
+            elist.append(list0),
+        return elist
+
+                      
+    def get_guess(self):
+        al = ['A','B','C','D','E','F','G','H','I','J']
+        test = True
+        while test:
+            guess = str(raw_input('Please pick a guess. First letter ranges from A to J, the second number range from 1 to 10.(e.g.A1) ---------- '))
+            G = ''.join(guess.split())
+            
+            if len(G) > 3 or len(G) < 2:
+                print 'Invalid length of the input!!'
+                test = True    
+            
+            else:
+                #if G[1:3].isdigit == True:
+                if int(G[1:3]) >10:
+                    print '*********System Notification ==== Warning! Invalid input!************'
+                    test = True
+                
+                elif (G[0] in al) and (int(G[1]) in [1,2,3,4,5,6,7,8,9] or int(G[1:3]) == 10):    
+                    test = False
+                else:
+                    print'*********System Notification ==== Warning! Invalid input!************'
+        
+        Y = G[0]
+        if len(G) == 2:
+            x = G[1]  
+        elif len(G) == 3:
+            x = G[1:3]   
+                
+        for yy in range (10):
+            if al[yy] == Y:   
+                y = yy+1 
+                #if x == 10:
+                    #x= x-1
+                    #return int(x),int(y)
+                
+                return int(x),int(y)
+
+        
+    def test_hit(self,x,y,Maplist):
+
+        if Maplist[int(y)][int(x)] == 'x':
+            return True
+        return False
+
+                
+    def test_repeat(self,x,y,l):
+        test = 10*x+y
+        if test in l:
+            return True
+        return False            
+        
+                        
+    def updateH(self,x,y,l):
+        test = 10*x+y
+        if self.test_repeat(x,y,l) == True:
+            l.remove(test)
+    
+    
+    def updateBoard(self,board,x,y,init):
+        board[y][x] = ' '+init[y][x]+' '
+        return board
+            
+    
+    
+    def test_end(self,x,y):
+        MAPL = self.convert_matrix(self.loadMap())
+        MAPL[y].remove(MAPL[y][x])
+        k = 1
+        for m in range(11):
+            while k<len(MAPL[m]):
+                if MAPL[m][k] != 0:
+                    return False
+                k = k+1
+        return True                
+        
+    def update_al1(self,AL,x,y):
+        MAPL = self.convert_matrix(self.loadMap1())
+        G = MAPL[y][x]
+        
+        AL.remove(G)
+    
+    def update_al2(self,ALAL,x,y):
+        MAPL = self.convert_matrix(self.loadMap2())
+        G = MAPL[y][x]
+        
+        ALAL.remove(G)    
+                
+    def test_sink1(self,AL,x,y):
+        MAPL1 = self.convert_matrix(self.loadMap1())
+        if AL.count(MAPL1[y][x]) == 0:
+            return True
+        return False
+        
+    def test_sink2(self,ALAL,x,y):
+        MAPL2 = self.convert_matrix(self.loadMap2())
+        if ALAL.count(MAPL2[y][x]) == 0:
+            return True
+        return False
+        
+  
+B = battleship()
+##B.readlist(B.background())
+print
+
+hundred1 = []
+hundred2 = []
+for m in range (111):
+    if m>0:
+        hundred1.append(int(m)) 
+        hundred2.append(int(m))
+
+LIST_initial_1 = B.convert_matrix(B.loadMap1())
+LIST_initial_2 = B.convert_matrix(B.loadMap2())
+
+al1 = []
+al2 = []
+for n in range(11):
+    if n >0:
+        for m in range(11):
+            if m >0:
+                
+                if LIST_initial_1[n][m] != '0':
+                    al1.append(LIST_initial_1[n][m])
+                if LIST_initial_2[n][m] != '0':
+                    al2.append(LIST_initial_2[n][m])
+
+
+print 'Welcome to Two players Battleship Game !!!'
+print 'Let\'s get started. '
+
+LIST1 = B.transfer_filelist(LIST_initial_1)
+LIST2 = B.transfer_filelist(LIST_initial_2)
+
+background1 = B.background1()
+background2 = B.background2()
+sunk1 = 0
+sunk2 = 0
+while len(al1) > 0 and len(al2) > 0:
+    interval = raw_input('Please hit \'enter\' to continue......   ')
+    ## Player1
+    print''
+    print'***************System notification!!! ====== Now it is player1\'s turn****************'
+    print''
+    print'<<<<<<<<<<<**** Now it is showing the player 1 map.****>>>>>>>>>>> '
+    print '' 
+    print
+    print B.readlist(background1)
+    print ''
+    print
+    print '<<<<<<<<<<<**** Now player 1 please pick a guess ***>>>>>>>>>>'
+    print
+    a,b = B.get_guess()
+    if B.test_repeat(a,b,hundred1) == False:
+        print '***************System notification!!! ====== Player1 you have already guessed this area. *******************'
+    elif B.test_repeat(a,b,hundred1) == True:
+        B.updateH(a,b,hundred1)
+        print
+        
+        if B.test_hit(a,b,LIST1) == False:
+            print '***************System notification!!! ====== It is not correct! Player 1 you missed it!******************'
+            
+        elif B.test_hit(a,b,LIST1) == True:
+            B.update_al1(al1,a,b)
+            print '***************System notification!!! ====== Correct! Strike succeeded!*******************'
+            
+            if B.test_sink1(al1,a,b) == True:
+                print '***************System notification!!! ====== Congrats! You have just put down an enemy ship.************'
+                sunk1 = sunk1 +1
+                print '***************System notification!!! ====== You have sunk', sunk1, 'battleship(s).'
+    print''
+    print
+    print 'Now it shows the player 1 map'        
+    
+    
+    background1 = B.updateBoard(background1,a,b,LIST1)
+    B.readlist(background1)
+    print''
+    print
+    print
+    print'|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|'
+    interval = raw_input('Please hit \'enter\' to continue......   ')
+    print ''
+    print
+    
+    ##Player 2
+    print'Then it is player2\'s turn.'
+    print'<<<<<<<<<<<**** Now it is showing the player 2 map.****>>>>>>>>>>> '
+    print '' 
+    print
+    
+    B.readlist(background2)
+    print''
+    print
+    print '<<<<<<<<<<<**** Now player 2 please pick a guess ***>>>>>>>>>>'
+    m,n = B.get_guess()
+    if B.test_repeat(m,n,hundred2) == False:
+        print
+        print 'Player1 you have already guessed this area.'
+    elif B.test_repeat(m,n,hundred2) == True:
+        B.updateH(m,n,hundred2)
+        print
+        
+        if B.test_hit(m,n,LIST2) == False:
+            print
+            print '***************System notification!!! ====== It is not correct! Player 2 you missed it!******************'
+            
+        elif B.test_hit(m,n,LIST2) == True:
+            B.update_al2(al2,m,n)
+            print '***************System notification!!! ====== Correct! Strike succeeded!*******************'
+            
+            
+            if B.test_sink2(al2,m,n) == True:
+                print '***************System notification!!! ====== Congrats! You have just put down an enemy ship.************'
+                sunk2 = sunk2 +1
+                print '***************System notification!!! ====== You have sunk', sunk2, 'battleship(s).'
+  
+    background2 = B.updateBoard(background2,m,n,LIST2)      
+    print''
+    print
+    B.readlist(background2)
+    print''
+    print
+    print'-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|'
+    print ''
+    print
+    print 
+ 
+ 
+    if len(al1) == 0:
+        print 'Player1 has won the game!'
+    if len(al2) == 0:
+        print 'Player2 has won the game!'
